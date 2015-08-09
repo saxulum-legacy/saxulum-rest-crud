@@ -4,15 +4,9 @@ namespace Saxulum\Tests\RestCrud\Controller;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
 use Knp\Component\Pager\Pagination\AbstractPagination;
 use Knp\Component\Pager\PaginatorInterface;
-use Saxulum\RestCrud\Listing\ListingFactory;
-use Saxulum\RestCrud\Listing\Type\ArrayType;
-use Saxulum\RestCrud\Listing\Type\FloatType;
-use Saxulum\RestCrud\Listing\Type\IntegerType;
-use Saxulum\RestCrud\Listing\Type\StringType;
 use Saxulum\RestCrud\Repository\QueryBuilderForFilterFormInterface;
 use Saxulum\Tests\RestCrud\Data\Controller\SampleController;
 use Saxulum\Tests\RestCrud\Data\Model\Sample;
@@ -360,8 +354,15 @@ class RestCrudTraitTest extends \PHPUnit_Framework_TestCase
         $mock
             ->expects($this->any())
             ->method('serialize')
-            ->will($this->returnCallback(function ($data, $format, SerializationContext $context = null) {
+            ->will($this->returnCallback(function ($data) {
                 return json_encode($data);
+            }))
+        ;
+        $mock
+            ->expects($this->any())
+            ->method('deserialize')
+            ->will($this->returnCallback(function ($data) {
+                return json_decode($data, true);
             }))
         ;
 
