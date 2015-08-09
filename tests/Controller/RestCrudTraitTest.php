@@ -4,6 +4,8 @@ namespace Saxulum\Tests\RestCrud\Controller;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use JMS\Serializer\SerializationContext;
+use JMS\Serializer\SerializerInterface;
 use Knp\Component\Pager\Pagination\AbstractPagination;
 use Knp\Component\Pager\PaginatorInterface;
 use Saxulum\RestCrud\Listing\ListingFactory;
@@ -41,16 +43,19 @@ class RestCrudTraitTest extends \PHPUnit_Framework_TestCase
         $controller = new SampleController(
             $this->getAuthorizationChecker('ROLE_SAMPLE_LIST'),
             $this->getDoctrine(Sample::classname),
+            $this->getUrlGenerator(),
+            $this->getSerializer(),
             $this->getFormFactory(
                 'Saxulum\Tests\RestCrud\Data\Form\SampleListType',
                 array('title' => 't'),
                 'query'
             ),
-            $this->getPaginator('QueryBuilder', 1, 10, array(), $page, $itemPerPage, $itemCount),
-            $this->getUrlGenerator()
+            $this->getPaginator('QueryBuilder', 1, 10, array(), $page, $itemPerPage, $itemCount)
         );
 
-        $data = $controller->restCrudObjectList($request);
+        $response = $controller->restCrudObjectList($request);
+
+        $data = json_decode($response->getContent(), true);
 
         $this->assertCount(10, $data['items']);
 
@@ -336,10 +341,27 @@ class RestCrudTraitTest extends \PHPUnit_Framework_TestCase
     {
         $mock = $this->getMock('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface');
         $mock
-            ->expects($this->once())
+            ->expects($this->any())
             ->method('isGranted')
             ->will($this->returnCallback(function ($givenRole) use ($expectedRole) {
                 return $givenRole === $expectedRole;
+            }))
+        ;
+
+        return $mock;
+    }
+
+    /**
+     * @return SerializerInterface
+     */
+    protected function getSerializer()
+    {
+        $mock = $this->getMock('JMS\Serializer\SerializerInterface');
+        $mock
+            ->expects($this->any())
+            ->method('serialize')
+            ->will($this->returnCallback(function ($data, $format, SerializationContext $context = null) {
+                return json_encode($data);
             }))
         ;
 

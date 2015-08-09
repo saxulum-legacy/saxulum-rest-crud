@@ -16,6 +16,7 @@
     "symfony/http-kernel": "~2.3",
     "symfony/routing": "~2.3",
     "symfony/security": "~2.3",
+    "jms/serializer": "~1.0",
     "twig/twig": "~1.2"
   },
   "require-dev": {

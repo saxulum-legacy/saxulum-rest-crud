@@ -3,6 +3,7 @@
 namespace Saxulum\RestCrud\Controller;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
+use JMS\Serializer\SerializerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -23,6 +24,16 @@ abstract class AbstractRestCrudController
     protected $doctrine;
 
     /**
+     * @var UrlGeneratorInterface
+     */
+    protected $urlGenerator;
+
+    /**
+     * @var SerializerInterface
+     */
+    protected $serializer;
+
+    /**
      * @var FormFactoryInterface
      */
     protected $formFactory;
@@ -33,29 +44,28 @@ abstract class AbstractRestCrudController
     protected $paginator;
 
     /**
-     * @var UrlGeneratorInterface
-     */
-    protected $urlGenerator;
-
-    /**
      * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param ManagerRegistry               $doctrine
-     * @param FormFactoryInterface          $formFactory
-     * @param PaginatorInterface            $paginator
-     * @param UrlGeneratorInterface         $urlGenerator
+     * @param ManagerRegistry $doctrine
+     * @param UrlGeneratorInterface $urlGenerator
+     * @param SerializerInterface $serializer
+     * @param FormFactoryInterface|null $formFactory
+     * @param PaginatorInterface|null $paginator
      */
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
         ManagerRegistry $doctrine,
+        UrlGeneratorInterface $urlGenerator,
+        SerializerInterface $serializer,
         FormFactoryInterface $formFactory = null,
-        PaginatorInterface $paginator = null,
-        UrlGeneratorInterface $urlGenerator = null
-    ) {
+        PaginatorInterface $paginator = null
+    )
+    {
         $this->authorizationChecker = $authorizationChecker;
         $this->doctrine = $doctrine;
+        $this->urlGenerator = $urlGenerator;
+        $this->serializer = $serializer;
         $this->paginator = $paginator;
         $this->formFactory = $formFactory;
-        $this->urlGenerator = $urlGenerator;
     }
 
     /**
@@ -75,6 +85,22 @@ abstract class AbstractRestCrudController
     }
 
     /**
+     * @return UrlGeneratorInterface
+     */
+    protected function restCrudUrlGenerator()
+    {
+        return $this->urlGenerator;
+    }
+
+    /**
+     * @return SerializerInterface
+     */
+    protected function restCrudSerializer()
+    {
+        return $this->serializer;
+    }
+
+    /**
      * @return PaginatorInterface
      */
     protected function restCrudPaginator()
@@ -88,13 +114,5 @@ abstract class AbstractRestCrudController
     protected function restCrudFormFactory()
     {
         return $this->formFactory;
-    }
-
-    /**
-     * @return UrlGeneratorInterface
-     */
-    protected function restCrudUrlGenerator()
-    {
-        return $this->urlGenerator;
     }
 }

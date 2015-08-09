@@ -5,6 +5,7 @@ namespace Saxulum\RestCrud\Controller;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ObjectRepository;
+use JMS\Serializer\SerializerInterface;
 use Knp\Component\Pager\Pagination\AbstractPagination;
 use Knp\Component\Pager\PaginatorInterface;
 use Saxulum\RestCrud\Exception\ServiceNotFoundException;
@@ -14,6 +15,7 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -25,7 +27,7 @@ trait RestCrudTrait
     /**
      * @param Request $request
      * @param array $additionalResponseVars
-     * @return array
+     * @return Response
      * @throws \Exception
      */
     public function restCrudObjectList(Request $request, array $additionalResponseVars = array())
@@ -62,7 +64,7 @@ trait RestCrudTrait
         $itemCount = $pagination->getTotalItemCount();
         $pageCount = ceil($itemCount / $itemCountPerPage);
 
-        return array_replace_recursive(array(
+        $data = array_replace_recursive(array(
             'items' => $pagination->getItems(),
             '_links' => array(
                 'first' => $this->restCrudGenerateListUrl($request, array('page' => 1)),
@@ -77,6 +79,10 @@ trait RestCrudTrait
                 'pageCount' => $pageCount
             ),
         ), $additionalResponseVars);
+
+        $content = $this->restCrudSerializer()->serialize($data, 'json');
+
+        return new Response($content);
     }
 
     public function restCrudObjectCreate(Request $request)
@@ -358,6 +364,19 @@ trait RestCrudTrait
         throw new ServiceNotFoundException(sprintf(
             'For actions using url generation you need: %s',
             'Symfony\Component\Routing\Generator\UrlGeneratorInterface'
+        ));
+    }
+
+    /**
+     * @return SerializerInterface
+     *
+     * @throws ServiceNotFoundException
+     */
+    protected function restCrudSerializer()
+    {
+        throw new ServiceNotFoundException(sprintf(
+            'For serializing you need: %s',
+            'JMS\Serializer\SerializerInterface'
         ));
     }
 }
