@@ -30,6 +30,10 @@ class ContentToFormDataConverter
             throw new \InvalidArgumentException('Please define a content type!');
         }
 
+        if('form' === $contentType) {
+            return $request;
+        }
+
         $formData =  $this->serializer->deserialize($request->getContent(), 'array', $contentType);
 
         $request = new Request(

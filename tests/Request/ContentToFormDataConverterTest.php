@@ -2,13 +2,14 @@
 
 namespace Saxulum\Tests\RestCrud\Request;
 
+use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
 use Saxulum\RestCrud\Request\ContentToFormDataConverter;
 use Symfony\Component\HttpFoundation\Request;
 
 class ContentToFormDataConverterTest extends \PHPUnit_Framework_TestCase
 {
-    public function testConvert()
+    public function testConvertJson()
     {
         $serializer = $this->getSerializer();
         $converter = new ContentToFormDataConverter($serializer);
@@ -42,15 +43,6 @@ class ContentToFormDataConverterTest extends \PHPUnit_Framework_TestCase
      */
     protected function getSerializer()
     {
-        $mock = $this->getMock('JMS\Serializer\SerializerInterface');
-        $mock
-            ->expects($this->any())
-            ->method('deserialize')
-            ->will($this->returnCallback(function ($data) {
-                return json_decode($data, true);
-            }))
-        ;
-
-        return $mock;
+        return SerializerBuilder::create()->build();
     }
 }
