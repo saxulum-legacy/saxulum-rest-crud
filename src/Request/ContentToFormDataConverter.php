@@ -34,7 +34,11 @@ class ContentToFormDataConverter
             return $request;
         }
 
-        $formData =  $this->serializer->deserialize($request->getContent(), 'array', $contentType);
+        if('xml' === $contentType) {
+            $formData =  $this->serializer->deserialize($request->getContent(), 'Saxulum\RestCrud\Request\XmlForm', $contentType)->toArray();
+        } else {
+            $formData =  $this->serializer->deserialize($request->getContent(), 'array', $contentType);
+        }
 
         $request = new Request(
             $request->query->all(),
