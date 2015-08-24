@@ -42,7 +42,7 @@ class ContentToFormDataConverterTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('application/x-www-form-urlencoded', $request->headers->get('content-type'));
         $this->assertEquals($formData, $request->request->all());
-        $this->assertEmpty($request->getContent());
+        $this->assertEquals(http_build_query($formData), $request->getContent());
     }
 
     public function testConvertXml()

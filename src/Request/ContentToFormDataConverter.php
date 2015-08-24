@@ -48,7 +48,8 @@ class ContentToFormDataConverter
             $request->files->all(),
             array_replace($request->server->all(), array(
                 'CONTENT_TYPE' => 'application/x-www-form-urlencoded'
-            ))
+            )),
+            http_build_query($formData)
         );
 
         return $request;
