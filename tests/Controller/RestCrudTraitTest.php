@@ -32,7 +32,7 @@ class RestCrudTraitTest extends \PHPUnit_Framework_TestCase
         $page = 3;
         $itemPerPage = 10;
         $itemCount = 45;
-        $pageCount = ceil($itemCount/$itemPerPage);
+        $pageCount = ceil($itemCount / $itemPerPage);
 
         $controller = new SampleController(
             $this->getAuthorizationChecker('ROLE_SAMPLE_LIST'),
@@ -57,7 +57,7 @@ class RestCrudTraitTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('http://test.lo/api_sample_listsample_list%5Btitle%5D=t&page=2', $data['_links']['prev']);
         $this->assertEquals('http://test.lo/api_sample_listsample_list%5Btitle%5D=t&page=4', $data['_links']['next']);
         $this->assertEquals('http://test.lo/api_sample_listsample_list%5Btitle%5D=t&page=5', $data['_links']['last']);
-        
+
         $this->assertEquals($itemCount, $data['_metadata']['itemCount']);
         $this->assertEquals($itemPerPage, $data['_metadata']['itemPerPage']);
         $this->assertEquals($page, $data['_metadata']['page']);
@@ -180,7 +180,7 @@ class RestCrudTraitTest extends \PHPUnit_Framework_TestCase
      */
     protected function getPagination($page, $itemsPerPage, $itemCount)
     {
-        if($page * $itemsPerPage - $itemsPerPage > $itemCount) {
+        if ($page * $itemsPerPage - $itemsPerPage > $itemCount) {
             throw new \InvalidArgumentException('Testinput does not make any sense!');
         }
 
@@ -211,12 +211,12 @@ class RestCrudTraitTest extends \PHPUnit_Framework_TestCase
                 $items = array();
 
                 // not the last page
-                if($page * $itemsPerPage < $itemCount) {
-                    for($i = 0; $i < $itemsPerPage; $i++) {
+                if ($page * $itemsPerPage < $itemCount) {
+                    for ($i = 0; $i < $itemsPerPage; ++$i) {
                         $items[] = new Sample();
                     }
                 } else {
-                    for($i = 0; $i < $page * $itemsPerPage - $itemCount; $i++) {
+                    for ($i = 0; $i < $page * $itemsPerPage - $itemCount; ++$i) {
                         $items[] = new Sample();
                     }
                 }
@@ -251,7 +251,7 @@ class RestCrudTraitTest extends \PHPUnit_Framework_TestCase
                 $formMock
                     ->expects($this->any())
                     ->method('getData')
-                    ->will($this->returnCallback(function() use(&$givenData) {
+                    ->will($this->returnCallback(function () use (&$givenData) {
                         return $givenData;
                     }))
                 ;
@@ -319,7 +319,7 @@ class RestCrudTraitTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnCallback(function ($givenName, $givenParameters, $givenReferenceType) {
                 $this->assertEquals(UrlGeneratorInterface::ABSOLUTE_URL, $givenReferenceType);
 
-                return 'http://test.lo/' . $givenName . http_build_query($givenParameters);
+                return 'http://test.lo/'.$givenName.http_build_query($givenParameters);
             }))
         ;
 

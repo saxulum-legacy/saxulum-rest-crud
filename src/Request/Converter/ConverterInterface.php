@@ -6,6 +6,7 @@ interface ConverterInterface
 {
     /**
      * @param string $content
+     *
      * @return array
      */
     public function convert($content);

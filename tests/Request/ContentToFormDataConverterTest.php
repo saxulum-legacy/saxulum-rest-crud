@@ -21,9 +21,9 @@ class ContentToFormDataConverterTest extends \PHPUnit_Framework_TestCase
                 'field2' => 2,
                 'field3' => array(
                     'subfield1' => 1,
-                    'subfield2' => 2
-                )
-            )
+                    'subfield2' => 2,
+                ),
+            ),
         );
 
         $originalRequest = new Request(
@@ -57,9 +57,9 @@ class ContentToFormDataConverterTest extends \PHPUnit_Framework_TestCase
                 'field2' => 2,
                 'field3' => array(
                     'subfield1' => 1,
-                    'subfield2' => 2
-                )
-            )
+                    'subfield2' => 2,
+                ),
+            ),
         );
 
         $originalRequest = new Request(
@@ -88,7 +88,7 @@ class ContentToFormDataConverterTest extends \PHPUnit_Framework_TestCase
     {
         $serializer = $this->getSerializer();
 
-         return new ContentToFormDataConverter(array(
+        return new ContentToFormDataConverter(array(
             new JsonConverter($serializer),
             new XmlConverter($serializer),
         ));

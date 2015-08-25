@@ -22,7 +22,7 @@ class SampleController extends AbstractRestCrudController
 
     /**
      * @param Request $request
-     * @param object $object
+     * @param object  $object
      *
      * @return SampleType
      */
@@ -33,7 +33,7 @@ class SampleController extends AbstractRestCrudController
 
     /**
      * @param Request $request
-     * @param object $object
+     * @param object  $object
      *
      * @return SampleType
      */

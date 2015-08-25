@@ -45,11 +45,11 @@ abstract class AbstractRestCrudController
 
     /**
      * @param AuthorizationCheckerInterface $authorizationChecker
-     * @param ManagerRegistry $doctrine
-     * @param UrlGeneratorInterface $urlGenerator
-     * @param SerializerInterface $serializer
-     * @param FormFactoryInterface|null $formFactory
-     * @param PaginatorInterface|null $paginator
+     * @param ManagerRegistry               $doctrine
+     * @param UrlGeneratorInterface         $urlGenerator
+     * @param SerializerInterface           $serializer
+     * @param FormFactoryInterface|null     $formFactory
+     * @param PaginatorInterface|null       $paginator
      */
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
@@ -58,8 +58,7 @@ abstract class AbstractRestCrudController
         SerializerInterface $serializer,
         FormFactoryInterface $formFactory = null,
         PaginatorInterface $paginator = null
-    )
-    {
+    ) {
         $this->authorizationChecker = $authorizationChecker;
         $this->doctrine = $doctrine;
         $this->urlGenerator = $urlGenerator;

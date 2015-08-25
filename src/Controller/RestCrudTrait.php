@@ -13,7 +13,6 @@ use Saxulum\RestCrud\Repository\QueryBuilderForFilterFormInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormTypeInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -26,13 +25,15 @@ trait RestCrudTrait
 {
     /**
      * @param Request $request
-     * @param array $additionalResponseVars
+     * @param array   $additionalResponseVars
+     *
      * @return Response
+     *
      * @throws \Exception
      */
     public function restCrudObjectList(Request $request, array $additionalResponseVars = array())
     {
-        if($request->getMethod() !== 'GET') {
+        if ($request->getMethod() !== 'GET') {
             throw new MethodNotAllowedHttpException('Only GET is allowed!');
         }
 
@@ -76,7 +77,7 @@ trait RestCrudTrait
                 'itemCount' => $itemCount,
                 'itemPerPage' => $itemCountPerPage,
                 'page' => $page,
-                'pageCount' => $pageCount
+                'pageCount' => $pageCount,
             ),
         ), $additionalResponseVars);
 
@@ -87,27 +88,22 @@ trait RestCrudTrait
 
     public function restCrudObjectCreate(Request $request)
     {
-
     }
 
     public function restCrudObjectRead(Request $request, $id)
     {
-
     }
 
     public function restCrudObjectUpdate(Request $request, $id)
     {
-
     }
 
     public function restCrudObjectPartialUpdate(Request $request, $id)
     {
-
     }
 
     public function restCrudObjectDelete(Request $request, $id)
     {
-
     }
 
     /**
@@ -134,7 +130,7 @@ trait RestCrudTrait
     protected function restCrudListForm(Request $request)
     {
         if (null === $formType = $this->restCrudListFormType($request)) {
-            return null;
+            return;
         }
 
         return $this->restCrudForm($formType, array());
@@ -147,7 +143,7 @@ trait RestCrudTrait
      */
     protected function restCrudListFormType(Request $request)
     {
-        return null;
+        return;
     }
 
     /**
@@ -163,7 +159,7 @@ trait RestCrudTrait
 
     /**
      * @param Request $request
-     * @param array $replace
+     * @param array   $replace
      *
      * @return string
      */

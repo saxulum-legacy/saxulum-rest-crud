@@ -35,9 +35,9 @@ class XmlForm
      */
     public function toArray()
     {
-        if($this->value) {
-            if(is_numeric($this->value)) {
-                if((int) $this->value == $this->value) {
+        if ($this->value) {
+            if (is_numeric($this->value)) {
+                if ((int) $this->value == $this->value) {
                     $this->value = (int) $this->value;
                 } else {
                     $this->value = (float) $this->value;
@@ -48,7 +48,7 @@ class XmlForm
         }
 
         $forms = array();
-        foreach($this->forms as $form) {
+        foreach ($this->forms as $form) {
             $forms = array_replace($forms, $form->toArray());
         }
 
