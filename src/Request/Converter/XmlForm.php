@@ -1,6 +1,6 @@
 <?php
 
-namespace Saxulum\RestCrud\Request;
+namespace Saxulum\RestCrud\Request\Converter;
 
 use JMS\Serializer\Annotation as Serializer;
 
@@ -26,7 +26,7 @@ class XmlForm
     /**
      * @var XmlForm[]
      * @Serializer\XmlList(inline = true, entry = "form")
-     * @Serializer\Type("array<Saxulum\RestCrud\Request\XmlForm>")
+     * @Serializer\Type("array<Saxulum\RestCrud\Request\Converter\XmlForm>")
      */
     protected $forms;
 

@@ -2,22 +2,35 @@
 
 namespace Saxulum\RestCrud\Request;
 
-use JMS\Serializer\SerializerInterface;
+use Saxulum\RestCrud\Request\Converter\ConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 class ContentToFormDataConverter
 {
     /**
-     * @var SerializerInterface
+     * @var ConverterInterface[]
      */
-    protected $serializer;
+    protected $converters = [];
 
     /**
-     * @param SerializerInterface $serializer
+     * @param ConverterInterface[] $converters
      */
-    public function __construct(SerializerInterface $serializer)
+    public function __construct(array $converters)
     {
-        $this->serializer = $serializer;
+        foreach ($converters as $i => $converter) {
+            if(!$converter instanceof ConverterInterface) {
+                $type = is_object($converter) ? get_class($converter) : gettype($converter);
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        'Only objects implementing "%s" are supported! "%s" given on index %s',
+                        'Saxulum\RestCrud\Request\Converter\ConverterInterface',
+                        $type,
+                        $i
+                    )
+                );
+            }
+            $this->converters[$converter->contentType()] = $converter;
+        }
     }
 
     /**
@@ -26,19 +39,16 @@ class ContentToFormDataConverter
      */
     public function convert(Request &$request)
     {
-        if(null === $contentType = $request->getContentType()) {
-            throw new \InvalidArgumentException('Please define a content type!');
+        $contentType = $request->headers->get('Content-Type');
+        if (false !== $pos = strpos($contentType, ';')) {
+            $contentType = substr($contentType, 0, $pos);
         }
 
-        if('form' === $contentType) {
+        if(in_array($contentType, array('application/x-www-form-urlencoded', 'multipart/form-data'), true)) {
             return $request;
         }
 
-        if('xml' === $contentType) {
-            $formData =  $this->serializer->deserialize($request->getContent(), 'Saxulum\RestCrud\Request\XmlForm', $contentType)->toArray();
-        } else {
-            $formData =  $this->serializer->deserialize($request->getContent(), 'array', $contentType);
-        }
+        $formData = $this->getConverter($contentType)->convert($request->getContent());
 
         $request = new Request(
             $request->query->all(),
@@ -53,5 +63,19 @@ class ContentToFormDataConverter
         );
 
         return $request;
+    }
+
+    /**
+     * @param string $contentType
+     * @return ConverterInterface
+     * @throws \Exception
+     */
+    protected function getConverter($contentType)
+    {
+        if(!isset($this->converters[$contentType])) {
+            throw new \Exception(sprintf('There is no converter for content type: "%s', $contentType));
+        }
+
+        return $this->converters[$contentType];
     }
 }
